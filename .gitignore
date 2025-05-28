@@ -1,0 +1,10 @@
+# CI4 base ignore
+.env
+/vendor/
+writable/cache/
+writable/logs/
+writable/session/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
