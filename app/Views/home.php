@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Presensi Online - UNJANI</title>
+  <title>Si-Kejar</title>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -125,7 +125,7 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg fixed-top navbar-custom">
     <div class="container">
-      <a class="navbar-brand" href="#">Presensi UNJANI</a>
+      <a class="navbar-brand" href="#">Si-Kejar</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -146,7 +146,7 @@
             <a class="nav-link" href="#fitur">Fitur</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-light btn-sm ms-3" href="login"
+            <a class="nav-link" href="<?= base_url('login') ?>" 
               >Login</a
             >
           </li>
@@ -158,10 +158,10 @@
   <!-- Hero Section -->
   <section class="hero" data-aos="fade-up">
     <div class="container">
-      <h1>Selamat Datang di Sistem Presensi Online</h1>
+      <h1>Selamat Datang di Si-Kejar <br> Sistem Kehadiran Kerja Praktik</h1>
       <p class="mt-3">
-        Platform modern pencatatan kehadiran peserta kerja praktik di
-        Universitas Jenderal Achmad Yani
+        Pantau dan catat kehadiran peserta kerja praktik secara digital.
+        Efisien. Transparan. Real-Time.
       </p>
       <a href="login" class="btn btn-primary btn-lg mt-4">Mulai Presensi</a>
     </div>
@@ -212,8 +212,7 @@
   <!-- Footer -->
   <footer class="text-center py-4 text-white">
     <small
-      >© 2025 Sistem Informasi Presensi Online - Universitas Jenderal Achmad
-      Yani</small
+      >© 2025 Sistem Kehadiran Kerja Praktik - Kelompok 7</small
     >
   </footer>
 
