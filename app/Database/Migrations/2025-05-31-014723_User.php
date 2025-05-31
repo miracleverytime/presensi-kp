@@ -20,7 +20,7 @@ class User extends Migration
             'updated_at'   => ['type' => 'DATETIME', 'null' => true],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->createTable('users');
+        $this->forge->createTable('user');
 
         $this->forge->addField([
             'id'           => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
@@ -36,7 +36,7 @@ class User extends Migration
 
     public function down()
     {
-        $this->forge->dropTable('users');
+        $this->forge->dropTable('user');
         $this->forge->dropTable('admin');
     }
 }

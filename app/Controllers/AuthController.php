@@ -80,34 +80,28 @@ class AuthController extends BaseController
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function register(): string
     {
         return view('auth/register');
     }
+
+    public function submit()
+    {
+        $validation = \Config\Services::validation();
+
+        $data = $this->request->getPost();
+
+        $userModel = new UserModel();
+        $userModel->save([
+            'nama'   => $data['name'],
+            'email'  => $data['email'],
+            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'kampus' => $data['kampus'],
+        ]);
+
+
+        return redirect()->to('/login')->with('success', 'Pendaftaran berhasil, silakan login!');
+    }
+
 }
+

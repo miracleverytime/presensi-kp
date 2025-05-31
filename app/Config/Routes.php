@@ -9,6 +9,7 @@ $routes->get('/', 'Home::index');
 $routes->get('/login', 'AuthController::login');
 $routes->post('/proses/login', 'AuthController::proseslogin');
 $routes->get('/register', 'AuthController::register');
+$routes->post('/register/account', 'AuthController::submit');
 
 
 $routes->group('user', ['filter' => 'auth:user'], function ($routes) {

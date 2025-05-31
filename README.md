@@ -9,11 +9,10 @@ Si-Kejar adalah aplikasi berbasis web yang dirancang untuk mencatat dan memantau
 - Presensi kerja praktik secara online
 - Validasi dan monitoring kehadiran oleh perusahaan
 - Laporan rekap kehadiran mahasiswa
-- Reset password (lupa password) via email (optional)
 
 ## 🛠️ Teknologi yang Digunakan
 
 - **Backend:** PHP dengan CodeIgniter 4
-- **Frontend:** HTML, CSS (dengan tema biru gradasi), JavaScript
+- **Frontend:** HTML, CSS, JavaScript
 - **Database:** MySQL
 - **Version Control:** Git & GitHub
