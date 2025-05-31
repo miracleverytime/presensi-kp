@@ -4,7 +4,8 @@
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
   <div class="card p-4 shadow" style="width: 100%; max-width: 420px;">
     <h3 class="text-center mb-2">Login ke Si-Kejar</h3>
-    <form action="<?= base_url('login') ?>" method="post">
+    <?= session()->getFlashdata('error'); ?>
+    <form action="<?= base_url('proses/login') ?>" method="post">
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="text" class="form-control" id="email" name="email" required autofocus>
