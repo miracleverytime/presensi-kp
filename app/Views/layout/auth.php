@@ -123,6 +123,14 @@
     footer {
       background-color: rgba(0, 0, 0, 0.7);
     }
+
+    .card {
+    background-color: rgba(255, 255, 255, 0.92);
+    border-radius: 16px;
+    backdrop-filter: blur(4px);
+    border: none;
+  }
+
   </style>
 </head>
 <body>
