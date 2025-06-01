@@ -87,21 +87,28 @@ class AuthController extends BaseController
 
     public function submit()
     {
-        $validation = \Config\Services::validation();
-
         $data = $this->request->getPost();
-
         $userModel = new UserModel();
-        $userModel->save([
-            'nama'   => $data['name'],
-            'email'  => $data['email'],
-            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-            'kampus' => $data['kampus'],
-        ]);
 
+        if ($userModel->where('email', $data['email'])->first()) {
+            return redirect()->back()->withInput()->with('error', 'Email sudah terdaftar, gunakan email lain');
+        }
 
-        return redirect()->to('/login')->with('success', 'Pendaftaran berhasil, silakan login!');
+        try {
+            $userModel->save([
+                'nama'     => $data['name'],
+                'email'    => $data['email'],
+                'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                'kampus'   => $data['kampus'],
+            ]);
+
+            return redirect()->to('/login')->with('success', 'Pendaftaran berhasil! Silakan login.');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal mendaftar, silakan coba lagi');
+        }
     }
+    
 
 }
 
