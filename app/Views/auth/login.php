@@ -11,6 +11,11 @@
         <?= session()->getFlashdata('error'); ?>
       </div>
     <?php endif; ?>
+    <?php if(session()->getFlashdata('success')): ?>
+      <div class="success-message">
+        <?= session()->getFlashdata('success'); ?>
+      </div>
+    <?php endif; ?>
     
     <form action="<?= base_url('proses/login') ?>" method="post">
       
@@ -30,7 +35,7 @@
       </div>
       
       <div class="forgot-password">
-        <a href="<?= base_url('lupa-password') ?>" class="login-link">Lupa Password?</a>
+        <a href="<?= base_url('forgot') ?>" class="login-link">Lupa Password?</a>
       </div>
       
       <button type="submit" class="btn btn-login w-100 mt-3">Masuk</button>
