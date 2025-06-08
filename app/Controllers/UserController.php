@@ -13,6 +13,7 @@ class UserController extends BaseController
          $userData = [
             'id' => session()->get('id'),
             'nama' => session()->get('nama'),
+            'nim'   => session()->get('nim'),
             'email' => session()->get('email'),
             'role' => session()->get('role')
         ];
