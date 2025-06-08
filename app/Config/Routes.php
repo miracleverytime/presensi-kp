@@ -23,11 +23,11 @@ $routes->get('test-email', 'AuthController::testEmail');
 $routes->get('logout', 'AuthController::login');
 
 $routes->group('user', ['filter' => 'auth:user'], function ($routes) {
-    $routes->get('dashboard', 'AuthController::dashboardu');
+    $routes->get('dashboard', 'UserController::dashboardu');
 });
 
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
-    $routes->get('dashboard', 'AuthController::dashboarda');
+    $routes->get('dashboard', 'AdminController::dashboarda');
 });
 
 

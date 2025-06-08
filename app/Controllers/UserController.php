@@ -4,11 +4,23 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\UserModel;
 
 class UserController extends BaseController
 {
-    public function index()
+    public function dashboardu()
     {
-        //
+         $userData = [
+            'id' => session()->get('id'),
+            'nama' => session()->get('nama'),
+            'email' => session()->get('email'),
+            'role' => session()->get('role')
+        ];
+        
+        // Kirim data user ke view
+        $data = [
+            'user' => $userData,
+        ];
+        return view('/user/dashboard', $data);
     }
 }

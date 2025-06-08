@@ -18,6 +18,8 @@ class AuthController extends BaseController
 
   public function proseslogin()
 {
+
+
     $email    = $this->request->getPost('email');
     $password = $this->request->getPost('password');
 
@@ -31,13 +33,16 @@ class AuthController extends BaseController
 
         if ($user) {
             if (password_verify($password, $user['password'])) {
-                session()->set([
+                $sessionData = [
                     'id'      => $user['id'],
                     'email'   => $user['email'],
+                    'nim'     => $user['nim'],
                     'nama'    => $user['nama'] ?? '',
                     'role'    => $role,
                     'isLogin' => true,
-                ]);
+                ];
+
+                session()->set($sessionData);
 
                 // Redirect sesuai role
                 if ($role === 'user') {
@@ -59,16 +64,6 @@ class AuthController extends BaseController
         echo password_hash('12345678', PASSWORD_DEFAULT);
     }
 
-    public function dashboarda()
-    {
-        return view('/admin/dashboard');
-    }
-
-    public function dashboardu()
-    {
-        return view('/user/dashboard');
-    }
-
     public function register(): string
     {
         return view('auth/register');
@@ -87,6 +82,7 @@ class AuthController extends BaseController
             $userModel->save([
                 'nama'     => $data['name'],
                 'email'    => $data['email'],
+                'nim'      => $data['nim'],
                 'password' => password_hash($data['password'], PASSWORD_DEFAULT),
                 'kampus'   => $data['kampus'],
             ]);

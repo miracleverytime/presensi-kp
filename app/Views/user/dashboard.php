@@ -515,7 +515,7 @@
             <div class="top-bar">
                 <div class="welcome-text">
                     <h1>Dashboard Peserta</h1>
-                    <p>Selamat datang, Jangan lupa presensi hari ini</p>
+                    <p>Selamat datang <?= esc($user['nama']) ?>, Jangan lupa presensi hari ini!</p>
                 </div>
                 <div class="user-info">
                     <div class="user-avatar">

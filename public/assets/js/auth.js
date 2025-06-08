@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const namaField = form.querySelector(".nama"),
           namaInput = namaField ? namaField.querySelector("input") : null,
+          nimField = form.querySelector(".nim"),
+          nimInput = nimField ? nimField.querySelector("input") : null,
           kampusField = form.querySelector(".kampus"),
           kampusInput = kampusField ? kampusField.querySelector("input") : null,
           eField = form.querySelector(".email"),
@@ -67,6 +69,21 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
+    function checkNim() { 
+      if(!nimInput || nimInput.value == "") { 
+        if(nimField) {
+          nimField.classList.add("error");
+          nimField.classList.remove("valid");
+        }
+      } else if(nimInput.value.length < 5) {
+        nimField.classList.add("error");
+        nimField.classList.remove("valid");
+      } else { 
+        nimField.classList.remove("error");
+        nimField.classList.add("valid");
+      }
+    }
+
     function checkKampus() { 
       if(!kampusInput || kampusInput.value == "") { 
         if(kampusField) {
@@ -117,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // EVENT LISTENERS UNTUK REAL-TIME VALIDATION
     if (namaInput) namaInput.onkeyup = () => { checkNama(); }
+    if (nimInput) nimInput.onkeyup = () => { checkNim(); }
     if (kampusInput) kampusInput.onkeyup = () => { checkKampus(); }
     if (eInput) eInput.onkeyup = () => { checkEmail(); }
     if (pInput) {
@@ -136,6 +154,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (namaField && namaInput) { 
         (namaInput.value == "") ? namaField.classList.add("shake", "error") : checkNama();
         setTimeout(() => { namaField.classList.remove("shake"); }, 500);
+      }
+
+      if (nimField && nimInput) {
+        (nimInput.value == "" || nimInput.value.length < 5) ? nimField.classList.add("shake", "error") : checkNim();
+        setTimeout(() => { nimField.classList.remove("shake"); }, 500);
       }
 
       if (kampusField && kampusInput) {
@@ -159,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Submit jika semua valid
       if((!namaField || !namaField.classList.contains("error")) &&
+         (!nimField || !nimField.classList.contains("error")) &&
          (!kampusField || !kampusField.classList.contains("error")) &&
          !eField.classList.contains("error") &&
          !pField.classList.contains("error") &&
@@ -167,4 +191,3 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 });
-
