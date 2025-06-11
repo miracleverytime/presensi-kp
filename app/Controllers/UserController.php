@@ -14,14 +14,38 @@ class UserController extends BaseController
             'id' => session()->get('id'),
             'nama' => session()->get('nama'),
             'nim'   => session()->get('nim'),
-            'email' => session()->get('email'),
-            'role' => session()->get('role')
+            'email' => session()->get('email')
         ];
         
-        // Kirim data user ke view
-        $data = [
-            'user' => $userData,
-        ];
-        return view('/user/dashboard', $data);
+        return view('/user/dashboard', $userData);
     }
+
+    public function profile()
+    {
+         $userData = [
+            'id' => session()->get('id'),
+            'nama' => session()->get('nama'),
+            'nim'   => session()->get('nim'),
+            'kampus'   => session()->get('kampus'),           
+            'email' => session()->get('email'),
+            'alamat' => session()->get('alamat')
+        ];
+
+        return view('/user/profile', $userData);
+    }
+
+    public function updateProfile()
+    {
+         $userData = [
+            'id' => session()->get('id'),
+            'nama' => session()->get('nama'),
+            'nim'   => session()->get('nim'),
+            'kampus'   => session()->get('kampus'),           
+            'email' => session()->get('email'),
+            'alamat' => session()->get('alamat')
+        ];
+
+        return view('/user/profile', $userData);
+    }
+
 }

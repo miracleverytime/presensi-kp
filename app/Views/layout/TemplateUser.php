@@ -20,7 +20,7 @@
                 <p>Sistem Kehadiran KP</p>
             </div>
             <nav class="sidebar-menu">
-                <a href="#" class="menu-item">
+                <a href="<?= base_url('user/dashboard') ?>" class="menu-item">
                     <i class="fas fa-home"></i>
                     Dashboard
                 </a>
@@ -32,7 +32,7 @@
                     <i class="fas fa-history"></i>
                     Riwayat Presensi
                 </a>
-                <a href="#" class="menu-item">
+                <a href="<?= base_url('user/profile') ?>" class="menu-item">
                     <i class="fas fa-user-edit"></i>
                     Profil Saya
                 </a>

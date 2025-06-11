@@ -36,11 +36,17 @@ class AuthController extends BaseController
                 $sessionData = [
                     'id'      => $user['id'],
                     'email'   => $user['email'],
-                    'nim'     => $user['nim'],
                     'nama'    => $user['nama'] ?? '',
                     'role'    => $role,
                     'isLogin' => true,
                 ];
+
+                // Tambahkan NIM hanya jika role adalah user
+                if ($role === 'user' && isset($user['nim'])) {
+                    $sessionData['nim'] = $user['nim'];
+                    $sessionData['kampus'] = $user['kampus'];
+                    $sessionData['alamat'] = $user['alamat'];
+                }
 
                 session()->set($sessionData);
 
@@ -61,7 +67,7 @@ class AuthController extends BaseController
 
     public function hash()
     {
-        echo password_hash('12345678', PASSWORD_DEFAULT);
+        echo password_hash('wifiburik14', PASSWORD_DEFAULT);
     }
 
     public function register(): string

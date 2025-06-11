@@ -7,15 +7,15 @@
             <div class="top-bar">
                 <div class="welcome-text">
                     <h1>Dashboard Peserta</h1>
-                    <p>Selamat datang <?= esc($user['nama']) ?>, Jangan lupa presensi hari ini!</p>
+                    <p>Selamat datang <?= esc($nama) ?>, Jangan lupa presensi hari ini!</p>
                 </div>
                 <div class="user-info">
                     <div class="user-avatar">
                         <i class="fas fa-user"></i>
                     </div>
                     <div>
-                        <div style="font-weight: 600; color: #2c3e50;"><?= esc($user['nama']); ?></div>
-                        <div style="font-size: 0.85rem; color: #6c757d;">NIM: <?= esc($user['nim']); ?></div>
+                        <div style="font-weight: 600; color: #2c3e50;"><?= esc($nama); ?></div>
+                        <div style="font-size: 0.85rem; color: #6c757d;">NIM: <?= esc($nim); ?></div>
                     </div>
                 </div>
             </div>

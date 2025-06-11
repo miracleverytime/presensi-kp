@@ -9,17 +9,17 @@ class AddKolomBaru extends Migration
     public function up()
     {
         $this->forge->addColumn('user', [
-            'nim' => [
+            'alamat' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
                 'null' => true,
-                'after' => 'nama'
+                'after' => 'password'
             ]
         ]);
     }
 
     public function down()
     {
-        $this->forge->dropColumn('user', ['nim']);
+        $this->forge->dropColumn('user', ['alamat']);
     }
 }
