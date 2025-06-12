@@ -10,42 +10,43 @@ class UserController extends BaseController
 {
     public function dashboardu()
     {
-         $userData = [
-            'id' => session()->get('id'),
-            'nama' => session()->get('nama'),
-            'nim'   => session()->get('nim'),
-            'email' => session()->get('email')
-        ];
+        $userModel = new UserModel();
+        $user = $userModel->find(session()->get('id'));
         
-        return view('/user/dashboard', $userData);
+        return view('/user/dashboard', $user);
     }
 
     public function profile()
     {
-         $userData = [
-            'id' => session()->get('id'),
-            'nama' => session()->get('nama'),
-            'nim'   => session()->get('nim'),
-            'kampus'   => session()->get('kampus'),           
-            'email' => session()->get('email'),
-            'alamat' => session()->get('alamat')
-        ];
+         $userModel = new UserModel();
+         $user = $userModel->find(session()->get('id'));
 
-        return view('/user/profile', $userData);
+
+        return view('/user/profile', $user);
     }
 
     public function updateProfile()
     {
-         $userData = [
-            'id' => session()->get('id'),
-            'nama' => session()->get('nama'),
-            'nim'   => session()->get('nim'),
-            'kampus'   => session()->get('kampus'),           
-            'email' => session()->get('email'),
-            'alamat' => session()->get('alamat')
+        $userModel = new UserModel();
+
+        $request = \Config\Services::request();
+        $id = session()->get('id'); 
+
+        $data = [
+            'nama'   => $request->getPost('nama'),
+            'nim'    => $request->getPost('nim'),
+            'kampus' => $request->getPost('kampus'),
+            'email'  => $request->getPost('email'),
+            'alamat' => $request->getPost('alamat'),
         ];
 
-        return view('/user/profile', $userData);
+        if (!empty(array_filter($data))) {
+            $userModel->update($id, $data);
+            return redirect()->to('/user/profile')->with('success', 'Data berhasil diperbarui.');
+        } else {
+            return redirect()->back()->with('error', 'Tidak ada data yang dikirim.');
+        }
     }
+
 
 }

@@ -448,30 +448,30 @@
                         <i class="fas fa-check-circle"></i> Profil berhasil diperbarui!
                     </div>
 
-                    <form id="profileForm">
+                    <form action="<?= base_url('user/profile/update') ?>" method="post" >
                         <div class="form-group">
                             <label class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-input" id="namaLengkap" value="<?= esc($nama); ?>">
+                            <input type="text" class="form-input" id="namaLengkap" name="nama" value="<?= esc($nama); ?>">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">NIM</label>
-                            <input type="text" class="form-input" id="nim" value="<?= esc($nim); ?>" disabled>
+                            <input type="text" class="form-input" id="nim" name="nim" value="<?= esc($nim); ?>">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-input" id="email" value="<?= esc($email); ?>">
+                            <input type="email" class="form-input" id="email" name="email" value="<?= esc($email); ?>">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Kampus</label>
-                            <input type="text" class="form-input" id="kampus" value="<?= esc($kampus); ?>">
+                            <input type="text" class="form-input" id="kampus" name="kampus" value="<?= esc($kampus); ?>">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Alamat</label>
-                            <textarea class="form-input" id="alamat" rows="3" placeholder="Masukkan alamat lengkap"><?= esc($alamat); ?></textarea>
+                            <textarea class="form-input" id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap"><?= esc($alamat); ?></textarea>
                         </div>
 
                         <div class="btn-group">
@@ -569,29 +569,6 @@
             perusahaan: document.getElementById('perusahaan').value,
             alamat: document.getElementById('alamat').value
         };
-
-        profileForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Simulate saving data
-            setTimeout(() => {
-                successAlert.style.display = 'block';
-                
-                // Update original data
-                originalData = {
-                    namaLengkap: document.getElementById('namaLengkap').value,
-                    email: document.getElementById('email').value,
-                    telepon: document.getElementById('telepon').value,
-                    perusahaan: document.getElementById('perusahaan').value,
-                    alamat: document.getElementById('alamat').value
-                };
-
-                // Hide alert after 3 seconds
-                setTimeout(() => {
-                    successAlert.style.display = 'none';
-                }, 3000);
-            }, 500);
-        });
 
         // Avatar upload handling
         const profileAvatar = document.getElementById('profileAvatar');
