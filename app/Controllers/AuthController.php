@@ -34,11 +34,12 @@ class AuthController extends BaseController
         if ($user) {
             if (password_verify($password, $user['password'])) {
                 $sessionData = [
-                    'id'      => $user['id'],
-                    'email'   => $user['email'],
-                    'nama'    => $user['nama'] ?? '',
-                    'role'    => $role,
-                    'isLogin' => true,
+                    'id'         => $user['id'],
+                    'email'      => $user['email'],
+                    'password'   => $user['password'],                  
+                    'nama'       => $user['nama'] ?? '',
+                    'role'       => $role,
+                    'isLogin'    => true,
                 ];
 
                 // Tambahkan NIM hanya jika role adalah user

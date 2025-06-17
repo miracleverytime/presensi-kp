@@ -26,6 +26,7 @@ $routes->group('user', ['filter' => 'auth:user'], function ($routes) {
     $routes->get('dashboard', 'UserController::dashboardu');
     $routes->get('profile', 'UserController::profile');
     $routes->post('profile/update', 'UserController::updateProfile');
+    $routes->post('profile/updatepass', 'UserController::updatePassword');
 });
 
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {

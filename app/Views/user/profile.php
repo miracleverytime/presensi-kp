@@ -444,9 +444,17 @@
                         Informasi Pribadi
                     </div>
 
-                    <div class="alert alert-success" id="successAlert">
-                        <i class="fas fa-check-circle"></i> Profil berhasil diperbarui!
-                    </div>
+                    <?php if(session()->getFlashdata('success')): ?>
+                        <div class="success-message">
+                            <?= session()->getFlashdata('success'); ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if(session()->getFlashdata('error')): ?>
+                        <div class="error-message">
+                            <?= session()->getFlashdata('error'); ?>
+                        </div>
+                    <?php endif; ?>
 
                     <form action="<?= base_url('user/profile/update') ?>" method="post" >
                         <div class="form-group">
@@ -517,24 +525,32 @@
                     Ubah Password
                 </div>
 
-                <div class="alert alert-error" id="passwordError">
-                    <i class="fas fa-exclamation-circle"></i> <span id="errorMessage"></span>
-                </div>
+                    <?php if(session()->getFlashdata('successp')): ?>
+                        <div class="success-message">
+                            <?= session()->getFlashdata('successp'); ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if(session()->getFlashdata('errorp')): ?>
+                        <div class="error-message">
+                            <?= session()->getFlashdata('errorp'); ?>
+                        </div>
+                    <?php endif; ?>                
 
-                <form id="passwordForm">
+                <form action="<?= base_url('user/profile/updatepass') ?>" method="post">
                     <div class="form-group">
                         <label class="form-label">Password Lama</label>
-                        <input type="password" class="form-input" id="oldPassword" required>
+                        <input type="password" class="form-input" id="old_password" name="old_password" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Password Baru</label>
-                        <input type="password" class="form-input" id="newPassword" required>
+                        <input type="password" class="form-input" id="new_password" name="new_password" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Konfirmasi Password Baru</label>
-                        <input type="password" class="form-input" id="confirmPassword" required>
+                        <input type="password" class="form-input" id="confirm_password" name="confirm_password" required>
                     </div>
 
                     <div class="btn-group">
@@ -556,19 +572,6 @@
         mobileMenuToggle.addEventListener('click', function() {
             sidebar.classList.toggle('active');
         });
-
-        // Profile form handling
-        const profileForm = document.getElementById('profileForm');
-        const successAlert = document.getElementById('successAlert');
-        const cancelBtn = document.getElementById('cancelBtn');
-
-        let originalData = {
-            namaLengkap: document.getElementById('namaLengkap').value,
-            email: document.getElementById('email').value,
-            telepon: document.getElementById('telepon').value,
-            perusahaan: document.getElementById('perusahaan').value,
-            alamat: document.getElementById('alamat').value
-        };
 
         // Avatar upload handling
         const profileAvatar = document.getElementById('profileAvatar');
