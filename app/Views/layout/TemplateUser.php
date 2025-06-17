@@ -24,7 +24,7 @@
                     <i class="fas fa-home"></i>
                     Dashboard
                 </a>
-                <a href="#" class="menu-item">
+                <a href="<?= base_url('user/presensi') ?>" class="menu-item">
                     <i class="fas fa-calendar-check"></i>
                     Presensi Hari Ini
                 </a>

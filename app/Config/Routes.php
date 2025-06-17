@@ -25,8 +25,11 @@ $routes->get('logout', 'AuthController::login');
 $routes->group('user', ['filter' => 'auth:user'], function ($routes) {
     $routes->get('dashboard', 'UserController::dashboardu');
     $routes->get('profile', 'UserController::profile');
+    $routes->get('presensi', 'UserController::presensi');
     $routes->post('profile/update', 'UserController::updateProfile');
     $routes->post('profile/updatepass', 'UserController::updatePassword');
+    $routes->post('presensi/checkin', 'UserController::checkin');
+    $routes->post('presensi/checkout', 'UserController::checkout');
 });
 
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
