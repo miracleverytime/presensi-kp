@@ -169,7 +169,7 @@ class UserController extends BaseController
 
             $message = ($status == 'Hadir') 
                 ? 'Presensi masuk berhasil! Selamat bekerja!' 
-                : 'Presensi masuk berhasil! Anda terlambat, mohon lebih tepat waktu kedepannya.';
+                : 'Presensi masuk berhasil!';
 
             return redirect()->back()->with('success', $message);
 

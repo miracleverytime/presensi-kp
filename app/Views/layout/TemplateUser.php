@@ -29,7 +29,7 @@
                     Presensi Hari Ini
                 </a>
                 <a href="<?= base_url('user/izin') ?>" class="menu-item">
-                    <i class="fas fa-history"></i>
+                    <i class="fas fa-paper-plane"></i>
                     Ajukan Izin
                 </a>
                 <a href="<?= base_url('user/riwayat') ?>" class="menu-item">
