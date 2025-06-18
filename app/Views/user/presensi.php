@@ -35,8 +35,8 @@
 
             <!-- Real-time Clock Card -->
             <div class="checkin-card">
-                <div class="current-time" id="currentTime">08:15:24</div>
-                <div class="current-date" id="currentDate">Senin, 8 Juni 2025</div>
+                <div class="current-time" id="currentTime"></div>
+                <div class="current-date" id="currentDate"></div>
                 
                 <!-- Location Info -->
                 <div class="location-info">
@@ -64,7 +64,7 @@
                             </div>
                             <div>
                                 <h3>Presensi Masuk</h3>
-                                <p>Waktu masuk kerja</p>
+                                <p>Waktu masuk kerja praktik</p>
                             </div>
                         </div>
                         
@@ -101,7 +101,7 @@
                             </div>
                             <div>
                                 <h3>Presensi Keluar</h3>
-                                <p>Waktu selesai kerja</p>
+                                <p>Waktu selesai kerja praktik</p>
                             </div>
                         </div>
                         

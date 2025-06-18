@@ -28,6 +28,10 @@
                     <i class="fas fa-calendar-check"></i>
                     Presensi Hari Ini
                 </a>
+                <a href="<?= base_url('user/izin') ?>" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    Ajukan Izin
+                </a>
                 <a href="<?= base_url('user/riwayat') ?>" class="menu-item">
                     <i class="fas fa-history"></i>
                     Riwayat Presensi

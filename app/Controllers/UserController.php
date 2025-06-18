@@ -6,31 +6,34 @@ use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UserModel;
 use App\Models\PresensiModel;
+use App\Models\IzinModel;
 
 class UserController extends BaseController
 {
     protected $presensiModel;
     protected $userModel;
+    protected $izinModel;
     
+
     public function __construct()
     {
         $this->presensiModel = new PresensiModel();
         $this->userModel = new UserModel();
+        $this->izinModel = new IzinModel();
     }
 
     public function dashboardu()
     {
         $userModel = new UserModel();
         $user = $userModel->find(session()->get('id'));
-        
+
         return view('/user/dashboard', $user);
     }
 
     public function profile()
     {
-         $userModel = new UserModel();
-         $user = $userModel->find(session()->get('id'));
-
+        $userModel = new UserModel();
+        $user = $userModel->find(session()->get('id'));
 
         return view('/user/profile', $user);
     }
@@ -41,10 +44,8 @@ class UserController extends BaseController
         $request = \Config\Services::request();
         $id = session()->get('id');
 
-        // Ambil data lama dari database
         $oldData = $userModel->find($id);
 
-        // Ambil data baru dari form
         $data = [
             'nama'   => $request->getPost('nama'),
             'nim'    => $request->getPost('nim'),
@@ -54,7 +55,6 @@ class UserController extends BaseController
         ];
 
         if (!empty(array_filter($data))) {
-            // Cek apakah email sudah digunakan user lain
             $existingUser = $userModel->where('email', $data['email'])
                                     ->where('id !=', $id)
                                     ->first();
@@ -63,7 +63,6 @@ class UserController extends BaseController
                 return redirect()->back()->with('error', 'Email sudah terdaftar oleh pengguna lain.');
             }
 
-            // Bandingkan data lama dengan data baru
             $isDifferent = false;
             foreach ($data as $key => $value) {
                 if ($oldData[$key] != $value) {
@@ -76,10 +75,7 @@ class UserController extends BaseController
                 return redirect()->back()->with('error', 'Tidak ada data yang diperbarui.');
             }
 
-            // Update data
             $userModel->update($id, $data);
-
-            // Update session
             session()->set($data);
 
             return redirect()->to('/user/profile')->with('success', 'Data berhasil diperbarui.');
@@ -99,20 +95,16 @@ class UserController extends BaseController
         $newPassword = $request->getPost('new_password');
         $confirmPassword = $request->getPost('confirm_password');
 
-        // Ambil data user berdasarkan ID
         $user = $userModel->find($id);
 
-        // Validasi password lama
         if (!password_verify($oldPassword, $user['password'])) {
             return redirect()->back()->with('errorp', 'Password lama salah.');
         }
 
-        // Validasi konfirmasi password
         if ($newPassword !== $confirmPassword) {
             return redirect()->back()->with('errorp', 'Konfirmasi password tidak cocok.');
         }
 
-        // Update password (hash dulu sebelum disimpan)
         $data = [
             'password' => password_hash($newPassword, PASSWORD_DEFAULT)
         ];
@@ -126,7 +118,7 @@ class UserController extends BaseController
     {
         $userId = session()->get('id');
         $user = $this->userModel->find($userId);
-        
+
         $today = date('Y-m-d');
         $presensiHariIni = $this->presensiModel
             ->where('user_id', $userId)
@@ -142,8 +134,7 @@ class UserController extends BaseController
         return view('/user/presensi', $data);
     }
 
-
-public function checkin()
+    public function checkin()
     {
         $userId = session()->get('id');
         $today = date('Y-m-d');
@@ -158,17 +149,19 @@ public function checkin()
             return redirect()->back()->with('error', 'Anda sudah melakukan presensi masuk hari ini');
         }
 
-        $keterangan = $this->request->getPost('keterangan') ?? '';
+        $inputKeterangan = $this->request->getPost('keterangan') ?? '';
         $jamMasuk = date('H:i:s');
-        $batasWaktu = '20:00:00';
-        $status = ($jamMasuk <= $batasWaktu) ? 'Hadir' : 'Terlambat';
+        $batasWaktu = '08:15:00';
+
+        $status = ($jamMasuk <= $batasWaktu) ? 'Masuk' : 'Masuk (telat)';
+        $keteranganFinal = !empty($inputKeterangan) ? 'masuk: ' . $inputKeterangan : '';
 
         $presensiData = [
             'user_id' => $userId,
             'tanggal' => $today,
             'waktu_masuk' => $currentTime,
             'status' => $status,
-            'keterangan' => $keterangan
+            'keterangan' => $keteranganFinal
         ];
 
         try {
@@ -204,21 +197,36 @@ public function checkin()
             return redirect()->back()->with('error', 'Anda sudah melakukan presensi keluar hari ini');
         }
 
-        $keterangan = $this->request->getPost('keterangan') ?? '';
+        $inputKeteranganKeluar = $this->request->getPost('keterangan') ?? '';
 
-        $keteranganFinal = !empty($keterangan) 
-            ? $existingPresensi['keterangan'] . ' | Keluar: ' . $keterangan
-            : $existingPresensi['keterangan'];
+        $keteranganMasuk = $existingPresensi['keterangan'] ?? '';
+        $keteranganKeluar = !empty($inputKeteranganKeluar) ? 'keluar: ' . $inputKeteranganKeluar : '';
+
+        if (!empty($keteranganMasuk) && !empty($keteranganKeluar)) {
+            $keteranganFinal = $keteranganMasuk . ' | ' . $keteranganKeluar;
+        } elseif (!empty($keteranganKeluar)) {
+            $keteranganFinal = $keteranganKeluar;
+        } else {
+            $keteranganFinal = $keteranganMasuk;
+        }
+
+        $waktuMasuk = strtotime($existingPresensi['waktu_masuk']);
+        $waktuKeluar = strtotime($currentTime);
+
+        $durasiDetik = $waktuKeluar - $waktuMasuk;
+        $jam = floor($durasiDetik / 3600);
+        $menit = floor(($durasiDetik % 3600) / 60);
+        $durasiKerja = sprintf('%02dj %02dm', $jam, $menit);
 
         $updateData = [
             'waktu_keluar' => $currentTime,
-            'keterangan' => $keteranganFinal
+            'keterangan' => $keteranganFinal,
+            'durasi_kerja' => $durasiKerja
         ];
 
         try {
             $this->presensiModel->update($existingPresensi['id'], $updateData);
             return redirect()->back()->with('success', 'Presensi keluar berhasil! Terima kasih.');
-
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal melakukan presensi keluar. Silakan coba lagi.');
         }
@@ -229,29 +237,25 @@ public function checkin()
         $userId = session()->get('id');
         $user = $this->userModel->find($userId);
 
-        // Ambil semua riwayat presensi user
         $riwayatPresensi = $this->presensiModel
             ->where('user_id', $userId)
             ->orderBy('tanggal', 'DESC')
             ->findAll();
 
-        // Hitung total status presensi
         $totalHadir = $this->presensiModel->where('user_id', $userId)->where('status', 'Hadir')->countAllResults();
         $totalSakit = $this->presensiModel->where('user_id', $userId)->where('status', 'Sakit')->countAllResults();
         $totalIzin  = $this->presensiModel->where('user_id', $userId)->where('status', 'Izin')->countAllResults();
         $totalAlpha = $this->presensiModel->where('user_id', $userId)->where('status', 'Alpha')->countAllResults();
 
-        // Format data riwayat untuk tabel
         $riwayatData = [];
         foreach ($riwayatPresensi as $item) {
             $tanggal = $item['tanggal'];
-            $hari = date('l', strtotime($tanggal)); // ex: Monday
+            $hari = date('l', strtotime($tanggal));
             $hari = $this->convertDayToIndo($hari);
 
             $jamMasuk = $item['waktu_masuk'] ? date('H:i:s', strtotime($item['waktu_masuk'])) : null;
             $jamKeluar = $item['waktu_keluar'] ? date('H:i:s', strtotime($item['waktu_keluar'])) : null;
 
-            // Hitung total jam
             if ($jamMasuk && $jamKeluar) {
                 $start = new \DateTime($item['waktu_masuk']);
                 $end = new \DateTime($item['waktu_keluar']);
@@ -285,7 +289,6 @@ public function checkin()
         return view('user/riwayat', $data);
     }
 
-    // Fungsi bantu ubah nama hari ke bahasa Indonesia
     private function convertDayToIndo($day)
     {
         $days = [
@@ -301,5 +304,128 @@ public function checkin()
         return $days[$day] ?? $day;
     }
 
+public function izin()
+    {
+        $userId = session()->get('id');
+        $user = $this->userModel->find($userId);
+        
+        $daftarIzin = $this->izinModel->where('user_id', $userId)->orderBy('tanggal', 'DESC')->findAll();
+
+        $data = [
+            'nama' => $user['nama'],
+            'nim' => $user['nim'],
+            'daftarIzin' => $daftarIzin
+        ];
+
+        return view('user/izin', $data);
+    }
+
+    public function ajukanIzin()
+    {
+        // Pastikan ini adalah POST request
+        if (!$this->request->is('post')) {
+            return redirect()->to('/user/izin')->with('error', 'Method tidak diizinkan.');
+        }
+
+        $userId = session()->get('id');
+        
+        // Ambil data dari form
+        $tanggal = $this->request->getPost('tanggal');
+        $jenis = $this->request->getPost('jenis');
+        $alasan = trim($this->request->getPost('alasan'));
+
+        // Validasi data
+        $validation = \Config\Services::validation();
+        
+        $validation->setRules([
+            'tanggal' => [
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'Tanggal harus diisi.',
+                    'valid_date' => 'Format tanggal tidak valid.'
+                ]
+            ],
+            'jenis' => [
+                'rules' => 'required|in_list[Izin,Sakit]',
+                'errors' => [
+                    'required' => 'Jenis izin harus dipilih.',
+                    'in_list' => 'Jenis izin tidak valid.'
+                ]
+            ],
+            'alasan' => [
+                'rules' => 'required|min_length[10]|max_length[500]',
+                'errors' => [
+                    'required' => 'Alasan harus diisi.',
+                    'min_length' => 'Alasan minimal 10 karakter.',
+                    'max_length' => 'Alasan maksimal 500 karakter.'
+                ]
+            ]
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                           ->withInput()
+                           ->with('errors', $validation->getErrors());
+        }
+
+        // Validasi tanggal tidak boleh masa lalu
+        if (strtotime($tanggal) < strtotime(date('Y-m-d'))) {
+            return redirect()->back()
+                           ->withInput()
+                           ->with('error', 'Tanggal izin tidak boleh masa lalu.');
+        }
+
+        // Cek apakah sudah ada izin di tanggal yang sama
+        $existing = $this->izinModel
+            ->where('user_id', $userId)
+            ->where('tanggal', $tanggal)
+            ->first();
+
+        if ($existing) {
+            return redirect()->back()
+                           ->withInput()
+                           ->with('error', 'Anda sudah mengajukan izin untuk tanggal tersebut.');
+        }
+
+        // Cek apakah sudah ada presensi di tanggal tersebut
+        $existingPresensi = $this->presensiModel
+            ->where('user_id', $userId)
+            ->where('tanggal', $tanggal)
+            ->first();
+
+        if ($existingPresensi) {
+            return redirect()->back()
+                           ->withInput()
+                           ->with('error', 'Anda sudah melakukan presensi untuk tanggal tersebut.');
+        }
+
+        // Simpan data izin
+        $izinData = [
+            'user_id' => $userId,
+            'tanggal' => $tanggal,
+            'jenis' => $jenis,
+            'alasan' => $alasan,
+            'status' => 'pending'
+        ];
+
+        try {
+            $result = $this->izinModel->insert($izinData);
+            
+            if ($result) {
+                return redirect()->to('/user/izin')
+                               ->with('success', 'Pengajuan izin berhasil dikirim. Tunggu konfirmasi dari admin.');
+            } else {
+                return redirect()->back()
+                               ->withInput()
+                               ->with('error', 'Gagal menyimpan pengajuan izin. Silakan coba lagi.');
+            }
+            
+        } catch (\Exception $e) {
+            log_message('error', 'Error saat menyimpan izin: ' . $e->getMessage());
+            return redirect()->back()
+                           ->withInput()
+                           ->with('error', 'Terjadi kesalahan sistem. Silakan coba lagi.');
+        }
+}
 
 }

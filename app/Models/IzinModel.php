@@ -4,15 +4,23 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class PresensiModel extends Model
+class IzinModel extends Model
 {
-    protected $table            = 'presensi';
+    protected $table            = 'izin';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['id', 'user_id', 'tanggal', 'waktu_masuk', 'waktu_keluar', 'durasi_kerja', 'status', 'keterangan'];
+    protected $allowedFields    = [
+        'user_id',
+        'tanggal',
+        'jenis',
+        'alasan',
+        'status',
+        'created_at',
+        'updated_at'
+    ];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +29,7 @@ class PresensiModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';

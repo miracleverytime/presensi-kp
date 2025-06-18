@@ -27,6 +27,8 @@ $routes->group('user', ['filter' => 'auth:user'], function ($routes) {
     $routes->get('profile', 'UserController::profile');
     $routes->get('presensi', 'UserController::presensi');
     $routes->get('riwayat', 'UserController::riwayat');
+    $routes->get('izin', 'UserController::izin');
+    $routes->post('izin/ajukan', 'UserController::ajukanIzin');
     $routes->post('profile/update', 'UserController::updateProfile');
     $routes->post('profile/updatepass', 'UserController::updatePassword');
     $routes->post('presensi/checkin', 'UserController::checkin');
