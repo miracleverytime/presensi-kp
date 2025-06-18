@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Si-Kejar</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <style>
         * {
             margin: 0;
@@ -408,7 +409,7 @@
                 <p>Control Panel</p>
             </div>
             <nav class="sidebar-menu">
-                <a href="#" class="menu-item active">
+                <a href="<?= base_url('admin/dashboard') ?>" class="menu-item">
                     <i class="fas fa-home"></i>
                     Dashboard
                 </a>
@@ -416,7 +417,7 @@
                     <i class="fas fa-users"></i>
                     Kelola Peserta
                 </a>
-                <a href="#" class="menu-item">
+                <a href="<?= base_url('admin/presensi') ?>" class="menu-item">
                     <i class="fas fa-chart-bar"></i>
                     Rekap Presensi
                 </a>

@@ -15,36 +15,15 @@ class AdminController extends BaseController
         return view('/admin/dashboard');
     }
 
-    public function daftarIzin()
+    public function rekapPresensi()
     {
-        $izinModel = new \App\Models\IzinModel();
-        $data['izin'] = $izinModel->join('user', 'user.id = izin.user_id')
-                                ->orderBy('izin.tanggal', 'DESC')
-                                ->findAll();
+        $presensiModel = new \App\Models\PresensiModel();
+        $builder = $presensiModel->select('presensi.*, user.nama, user.nim, user.kampus')
+                                ->join('user', 'user.id = presensi.user_id')
+                                ->orderBy('tanggal', 'DESC');
+        $data['rekap'] = $builder->findAll();
 
-        return view('admin/daftar_izin', $data);
+        return view('admin/rekap_presensi', $data);
     }
 
-    public function verifikasiIzin($id, $aksi)
-    {
-        $izinModel = new \App\Models\IzinModel();
-
-        $izin = $izinModel->find($id);
-        if (!$izin) {
-            return redirect()->back()->with('error', 'Data izin tidak ditemukan.');
-        }
-
-        if (!in_array($aksi, ['diterima', 'ditolak'])) {
-            return redirect()->back()->with('error', 'Aksi tidak valid.');
-        }
-
-        $izinModel->update($id, [
-            'status' => $aksi
-        ]);
-
-        return redirect()->back()->with('success', 'Status izin berhasil diperbarui.');
-    }
-
-
-    
 }

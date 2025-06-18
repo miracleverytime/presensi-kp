@@ -37,6 +37,7 @@ $routes->group('user', ['filter' => 'auth:user'], function ($routes) {
 
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::dashboarda');
+    $routes->get('presensi', 'AdminController::rekapPresensi');
 });
 
 
