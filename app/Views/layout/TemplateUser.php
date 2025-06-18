@@ -28,7 +28,7 @@
                     <i class="fas fa-calendar-check"></i>
                     Presensi Hari Ini
                 </a>
-                <a href="#" class="menu-item">
+                <a href="<?= base_url('user/riwayat') ?>" class="menu-item">
                     <i class="fas fa-history"></i>
                     Riwayat Presensi
                 </a>
@@ -65,35 +65,6 @@
         // Update time every second
         setInterval(updateTime, 1000);
         updateTime();
-
-        // Check-in/Check-out functionality
-        let checkedIn = false;
-        const checkinBtn = document.getElementById('checkinBtn');
-        const checkoutBtn = document.getElementById('checkoutBtn');
-
-        checkinBtn.addEventListener('click', function() {
-            if (!checkedIn) {
-                checkedIn = true;
-                checkinBtn.disabled = true;
-                checkinBtn.innerHTML = '<i class="fas fa-check"></i> Sudah Check In';
-                checkoutBtn.disabled = false;
-                
-                // Show success message (you can replace with a toast notification)
-                alert('Check-in berhasil! Selamat bekerja!');
-            }
-        });
-
-        checkoutBtn.addEventListener('click', function() {
-            if (checkedIn) {
-                checkedIn = false;
-                checkinBtn.disabled = false;
-                checkinBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Check In';
-                checkoutBtn.disabled = true;
-                
-                // Show success message
-                alert('Check-out berhasil! Terima kasih atas kerja kerasnya!');
-            }
-        });
 
     </script>
 </body>

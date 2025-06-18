@@ -41,6 +41,10 @@ class UserController extends BaseController
         $request = \Config\Services::request();
         $id = session()->get('id');
 
+        // Ambil data lama dari database
+        $oldData = $userModel->find($id);
+
+        // Ambil data baru dari form
         $data = [
             'nama'   => $request->getPost('nama'),
             'nim'    => $request->getPost('nim'),
@@ -59,9 +63,23 @@ class UserController extends BaseController
                 return redirect()->back()->with('error', 'Email sudah terdaftar oleh pengguna lain.');
             }
 
+            // Bandingkan data lama dengan data baru
+            $isDifferent = false;
+            foreach ($data as $key => $value) {
+                if ($oldData[$key] != $value) {
+                    $isDifferent = true;
+                    break;
+                }
+            }
+
+            if (!$isDifferent) {
+                return redirect()->back()->with('error', 'Tidak ada data yang diperbarui.');
+            }
+
+            // Update data
             $userModel->update($id, $data);
 
-            // Update session agar data langsung tampil
+            // Update session
             session()->set($data);
 
             return redirect()->to('/user/profile')->with('success', 'Data berhasil diperbarui.');
@@ -106,12 +124,24 @@ class UserController extends BaseController
 
     public function presensi()
     {
-         $userModel = new UserModel();
-         $user = $userModel->find(session()->get('id'));
+        $userId = session()->get('id');
+        $user = $this->userModel->find($userId);
+        
+        $today = date('Y-m-d');
+        $presensiHariIni = $this->presensiModel
+            ->where('user_id', $userId)
+            ->where('tanggal', $today)
+            ->first();
 
+        $data = [
+            'nama' => $user['nama'],
+            'nim' => $user['nim'],
+            'presensi_hari_ini' => $presensiHariIni,
+        ];
 
-        return view('/user/presensi', $user);
+        return view('/user/presensi', $data);
     }
+
 
 public function checkin()
     {
@@ -130,7 +160,7 @@ public function checkin()
 
         $keterangan = $this->request->getPost('keterangan') ?? '';
         $jamMasuk = date('H:i:s');
-        $batasWaktu = '00:00:00';
+        $batasWaktu = '20:00:00';
         $status = ($jamMasuk <= $batasWaktu) ? 'Hadir' : 'Terlambat';
 
         $presensiData = [
@@ -193,5 +223,83 @@ public function checkin()
             return redirect()->back()->with('error', 'Gagal melakukan presensi keluar. Silakan coba lagi.');
         }
     }
+
+    public function riwayat()
+    {
+        $userId = session()->get('id');
+        $user = $this->userModel->find($userId);
+
+        // Ambil semua riwayat presensi user
+        $riwayatPresensi = $this->presensiModel
+            ->where('user_id', $userId)
+            ->orderBy('tanggal', 'DESC')
+            ->findAll();
+
+        // Hitung total status presensi
+        $totalHadir = $this->presensiModel->where('user_id', $userId)->where('status', 'Hadir')->countAllResults();
+        $totalSakit = $this->presensiModel->where('user_id', $userId)->where('status', 'Sakit')->countAllResults();
+        $totalIzin  = $this->presensiModel->where('user_id', $userId)->where('status', 'Izin')->countAllResults();
+        $totalAlpha = $this->presensiModel->where('user_id', $userId)->where('status', 'Alpha')->countAllResults();
+
+        // Format data riwayat untuk tabel
+        $riwayatData = [];
+        foreach ($riwayatPresensi as $item) {
+            $tanggal = $item['tanggal'];
+            $hari = date('l', strtotime($tanggal)); // ex: Monday
+            $hari = $this->convertDayToIndo($hari);
+
+            $jamMasuk = $item['waktu_masuk'] ? date('H:i:s', strtotime($item['waktu_masuk'])) : null;
+            $jamKeluar = $item['waktu_keluar'] ? date('H:i:s', strtotime($item['waktu_keluar'])) : null;
+
+            // Hitung total jam
+            if ($jamMasuk && $jamKeluar) {
+                $start = new \DateTime($item['waktu_masuk']);
+                $end = new \DateTime($item['waktu_keluar']);
+                $interval = $start->diff($end);
+                $totalJam = $interval->h . ' jam ' . $interval->i . ' menit';
+            } else {
+                $totalJam = '0 jam';
+            }
+
+            $riwayatData[] = [
+                'tanggal' => $tanggal,
+                'hari' => $hari,
+                'jam_masuk' => $jamMasuk,
+                'jam_keluar' => $jamKeluar,
+                'total_jam' => $totalJam,
+                'status' => $item['status'],
+                'keterangan' => $item['keterangan']
+            ];
+        }
+
+        $data = [
+            'nama' => $user['nama'],
+            'nim' => $user['nim'],
+            'riwayatPresensi' => $riwayatData,
+            'totalHadir' => $totalHadir,
+            'totalSakit' => $totalSakit,
+            'totalIzin' => $totalIzin,
+            'totalAlpha' => $totalAlpha
+        ];
+
+        return view('user/riwayat', $data);
+    }
+
+    // Fungsi bantu ubah nama hari ke bahasa Indonesia
+    private function convertDayToIndo($day)
+    {
+        $days = [
+            'Sunday' => 'Minggu',
+            'Monday' => 'Senin',
+            'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday' => 'Kamis',
+            'Friday' => 'Jumat',
+            'Saturday' => 'Sabtu'
+        ];
+
+        return $days[$day] ?? $day;
+    }
+
 
 }

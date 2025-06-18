@@ -417,12 +417,8 @@
                     Kelola Peserta
                 </a>
                 <a href="#" class="menu-item">
-                    <i class="fas fa-clock"></i>
-                    Data Presensi
-                </a>
-                <a href="#" class="menu-item">
                     <i class="fas fa-chart-bar"></i>
-                    Laporan
+                    Rekap Presensi
                 </a>
                 <a href="<?= base_url('logout') ?>" class="menu-item">
                     <i class="fas fa-sign-out-alt"></i>

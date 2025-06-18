@@ -22,8 +22,8 @@
 
             <!-- Check-in Card -->
             <div class="checkin-card">
-                <div class="current-time" id="currentTime">08:15:24</div>
-                <div class="current-date" id="currentDate">Senin, 8 Juni 2025</div>
+                <div class="current-time" id="currentTime"></div>
+                <div class="current-date" id="currentDate"></div>
                 <div class="checkin-buttons">
                     <button class="btn-checkin" id="checkinBtn">
                         <i class="fas fa-sign-in-alt"></i>
