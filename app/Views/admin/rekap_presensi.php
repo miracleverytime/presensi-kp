@@ -20,14 +20,14 @@
 
     <!-- Tabel Presensi -->
     <div style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow-x: auto;">
-        <h2 style="color: #ff6b6b; margin-bottom: 20px;">Tabel Rekap Kehadiran</h2>
+        <h2 style="margin-bottom: 20px;">Tabel Rekap Kehadiran</h2>
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr style="background: linear-gradient(to right, #ff6b6b, #ffa726); color: white;">
                     <th style="padding: 12px; border: 1px solid #ddd;">No</th>
                     <th style="padding: 12px; border: 1px solid #ddd;">Nama Peserta KP</th>
                     <th style="padding: 12px; border: 1px solid #ddd;">NIM</th>
-                    <th style="padding: 12px;">Kampus</th>
+                    <th style="padding: 12px; border: 1px solid #ddd;">Kampus</th>
                     <th style="padding: 12px; border: 1px solid #ddd;">Tanggal</th>
                     <th style="padding: 12px; border: 1px solid #ddd;">Waktu Masuk</th>
                     <th style="padding: 12px; border: 1px solid #ddd;">Waktu Keluar</th>
@@ -43,7 +43,7 @@
                             <td style="padding: 10px; border: 1px solid #ddd; text-align: center;"><?= $no++ ?></td>
                             <td style="padding: 10px; border: 1px solid #ddd;"><?= esc($row['nama']) ?></td>
                             <td style="padding: 10px; border: 1px solid #ddd;"><?= esc($row['nim']) ?></td>
-                            <td style="padding: 10px;"><?= esc($row['kampus']) ?></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><?= esc($row['kampus']) ?></td>
                             <td style="padding: 10px; border: 1px solid #ddd;"><?= date('d-m-Y', strtotime($row['tanggal'])) ?></td>
                             <td style="padding: 10px; border: 1px solid #ddd;"><?= $row['waktu_masuk'] ?? '-' ?></td>
                             <td style="padding: 10px; border: 1px solid #ddd;"><?= $row['waktu_keluar'] ?? '-' ?></td>

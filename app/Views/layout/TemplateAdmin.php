@@ -413,7 +413,7 @@
                     <i class="fas fa-home"></i>
                     Dashboard
                 </a>
-                <a href="#" class="menu-item">
+                <a href="<?= base_url('admin/peserta') ?>" class="menu-item">
                     <i class="fas fa-users"></i>
                     Kelola Peserta
                 </a>
@@ -431,6 +431,9 @@
         <?= $this->renderSection('content'); ?>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </body>
 </html>

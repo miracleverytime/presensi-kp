@@ -38,6 +38,11 @@ $routes->group('user', ['filter' => 'auth:user'], function ($routes) {
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::dashboarda');
     $routes->get('presensi', 'AdminController::rekapPresensi');
+    $routes->get('peserta', 'AdminController::kelolaPeserta');
+    $routes->get('peserta/edit/(:num)', 'AdminController::editPeserta/$1');
+    $routes->get('peserta/delete/(:num)', 'AdminController::deletePeserta/$1');
+    $routes->post('peserta/update/(:num)', 'AdminController::updatePeserta/$1');
+
 });
 
 
