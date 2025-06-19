@@ -40,6 +40,10 @@
                     <i class="fas fa-user-edit"></i>
                     Profil Saya
                 </a>
+                <a href="<?= base_url('user/about') ?>" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    About
+                </a>
                 <a href="#" class="menu-item" id="btnLogout">
                     <i class="fas fa-sign-out-alt"></i>
                     Logout

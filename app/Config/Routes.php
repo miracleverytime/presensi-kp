@@ -28,17 +28,22 @@ $routes->group('user', ['filter' => 'auth:user'], function ($routes) {
     $routes->get('presensi', 'UserController::presensi');
     $routes->get('riwayat', 'UserController::riwayat');
     $routes->get('izin', 'UserController::izin');
+    $routes->get('bantuan', 'UserController::bantuan');
+    $routes->get('about', 'UserController::about');
     $routes->post('izin/ajukan', 'UserController::ajukanIzin');
     $routes->post('profile/update', 'UserController::updateProfile');
     $routes->post('profile/updatepass', 'UserController::updatePassword');
     $routes->post('presensi/checkin', 'UserController::checkin');
     $routes->post('presensi/checkout', 'UserController::checkout');
+    $routes->post('send-message', 'UserController::sendMessage');
+    $routes->get('get-messages', 'UserController::getMessages');
 });
 
 $routes->group('admin', ['filter' => 'auth:admin'], function ($routes) {
     $routes->get('dashboard', 'AdminController::dashboarda');
     $routes->get('presensi', 'AdminController::rekapPresensi');
     $routes->get('peserta', 'AdminController::kelolaPeserta');
+    $routes->get('bantuan', 'AdminController::bantuan');
     $routes->get('izin', 'AdminController::kelolaIzin');
     $routes->get('peserta/edit/(:num)', 'AdminController::editPeserta/$1');
     $routes->get('peserta/delete/(:num)', 'AdminController::deletePeserta/$1');

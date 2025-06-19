@@ -492,32 +492,6 @@
                 </div>
             </div>
 
-            <!-- Statistics Section -->
-            <div class="stats-section">
-                <div class="section-title">
-                    <i class="fas fa-chart-bar"></i>
-                    Statistik KP Saya
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value">45</div>
-                        <div class="stat-label">Hari KP</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">22</div>
-                        <div class="stat-label">Hari Hadir</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">91%</div>
-                        <div class="stat-label">Kehadiran</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">176</div>
-                        <div class="stat-label">Total Jam</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Change Password Section -->
             <div class="change-password-section">
                 <div class="section-title">

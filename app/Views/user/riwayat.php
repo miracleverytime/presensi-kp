@@ -44,23 +44,6 @@
         opacity: 0.9;
     }
 
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .user-avatar {
-        width: 50px;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-
     /* Filter Section */
     .filter-section {
         background: rgba(255, 255, 255, 0.95);
@@ -318,51 +301,18 @@
 
 <!-- Main Content -->
 <main class="main-content">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="header-content">
-            <div class="header-title">
-                <h1>Riwayat Presensi</h1>
-                <p>Lihat rekap kehadiran dan statistik presensi Anda</p>
-            </div>
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.1rem;"><?= esc($nama); ?></div>
-                    <div style="opacity: 0.8;">NIM: <?= esc($nim); ?></div>
-                </div>
-            </div>
+    <div class="top-bar">
+        <div class="welcome-text">
+            <h1>Riwayat Presensi</h1>
+            <p>Riwayat presensi peserta KP</p>
         </div>
-    </div>
-
-    <!-- Filter Section -->
-    <div class="filter-section">
-        <div class="filter-grid">
-            <div class="filter-group">
-                <label for="startDate">Tanggal Mulai</label>
-                <input type="date" id="startDate" name="startDate" value="2025-06-01">
+        <div class="user-info">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
             </div>
-            <div class="filter-group">
-                <label for="endDate">Tanggal Akhir</label>
-                <input type="date" id="endDate" name="endDate" value="2025-06-18">
-            </div>
-            <div class="filter-group">
-                <label for="statusFilter">Status</label>
-                <select id="statusFilter" name="statusFilter">
-                    <option value="">Semua Status</option>
-                    <option value="hadir">Hadir</option>
-                    <option value="sakit">Sakit</option>
-                    <option value="izin">Izin</option>
-                    <option value="alpha">Alpha</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <button class="filter-btn" onclick="filterData()">
-                    <i class="fas fa-search"></i>
-                    Filter
-                </button>
+            <div>
+                <div style="font-weight: 600; color: #2c3e50;"><?= esc($nama); ?></div>
+                <div style="font-size: 0.85rem; color: #6c757d;">NIM: <?= esc($nim); ?></div>
             </div>
         </div>
     </div>

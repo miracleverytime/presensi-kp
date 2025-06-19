@@ -19,88 +19,39 @@
         </div>
     </div>
 
-    <!-- Content Grid -->
-    <div class="content-grid">
-
-        <!-- Recent Activity -->
-        <div class="activity-section">
-            <div class="section-header">
-                <div class="section-icon"><i class="fas fa-history"></i></div>
-                <div class="section-title">Aktivitas Terbaru</div>
-            </div>
-            <?php if (!empty($aktivitasTerbaru)) : ?>
-                <?php foreach ($aktivitasTerbaru as $log): ?>
-                    <div class="activity-item">
-                        <div class="activity-icon <?= esc($log['tipe']) ?>">
-                            <i class="<?= esc($log['ikon']) ?>"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4><?= esc($log['judul']) ?></h4>
-                            <p><?= esc($log['waktu']) ?> - <?= esc($log['keterangan']) ?></p>
-                        </div>
-                    </div>
-                <?php endforeach ?>
-            <?php else: ?>
-                <p style="margin-top: 10px;">Belum ada aktivitas terbaru.</p>
-            <?php endif ?>
+    <!-- Aktivitas Terbaru (Full Width) -->
+    <div class="activity-section" style="margin-top: 30px; background: #f5f6f8; border-radius: 12px; padding: 20px;">
+        <div class="section-header" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <div class="section-icon"><i class="fas fa-history"></i></div>
+            <div class="section-title">Aktivitas Terbaru</div>
         </div>
+        <?php if (!empty($aktivitasTerbaru)) : ?>
+            <?php foreach ($aktivitasTerbaru as $log): ?>
+                <div class="activity-item">
+                    <div class="activity-icon 
+                        <?= ($log['waktu_keluar']) ? 'checkout' : (($log['status'] === 'terlambat') ? 'checkin' : 'login') ?>">
+                        <i class="<?= ($log['waktu_keluar']) ? 'fas fa-sign-out-alt' : (($log['status'] === 'terlambat') ? 'fas fa-clock' : 'fas fa-sign-in-alt') ?>"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h4><?= esc($log['nama']) ?> <?= $log['waktu_keluar'] ? 'Check Out' : 'Check In' ?></h4>
+                        <p>
+                            <?= date('d M Y', strtotime($log['tanggal'])) ?> –
+                            <?= $log['waktu_keluar']
+                                ? date('H:i', strtotime($log['waktu_keluar'])) . ' WIB'
+                                : date('H:i', strtotime($log['waktu_masuk'])) . ' WIB'
+                            ?>
+                            –
+                            <?= ucfirst($log['status']) ?>
+                        </p>
+                    </div>
+                </div>
+            <?php endforeach ?>
+        <?php else: ?>
+            <p style="margin-top: 10px;">Belum ada aktivitas terbaru.</p>
+        <?php endif ?>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <a href="<?= base_url('admin/peserta/tambah') ?>" class="action-card">
-            <div class="action-icon"><i class="fas fa-user-plus"></i></div>
-            <div class="action-title">Tambah Peserta</div>
-            <div class="action-desc">Daftarkan peserta KP baru</div>
-        </a>
-        <a href="<?= base_url('admin/rekap/export') ?>" class="action-card">
-            <div class="action-icon"><i class="fas fa-file-export"></i></div>
-            <div class="action-title">Export Laporan</div>
-            <div class="action-desc">Unduh laporan kehadiran</div>
-        </a>
-        <a href="<?= base_url('admin/pengumuman') ?>" class="action-card">
-            <div class="action-icon"><i class="fas fa-bell"></i></div>
-            <div class="action-title">Kirim Pengumuman</div>
-            <div class="action-desc">Broadcast ke semua peserta</div>
-        </a>
-        <a href="<?= base_url('admin/pengaturan') ?>" class="action-card">
-            <div class="action-icon"><i class="fas fa-cogs"></i></div>
-            <div class="action-title">Pengaturan Sistem</div>
-            <div class="action-desc">Konfigurasi aplikasi</div>
-        </a>
-    </div>
+
 </main>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('grafikKehadiran').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: <?= json_encode($labelTanggal) ?>,
-            datasets: [{
-                label: 'Jumlah Hadir',
-                data: <?= json_encode($jumlahHadir) ?>,
-                borderColor: '#ff6b6b',
-                backgroundColor: 'rgba(255,107,107,0.2)',
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    stepSize: 1
-                }
-            }
-        }
-    });
-</script>
 
 <?= $this->endSection(); ?>

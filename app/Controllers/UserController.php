@@ -7,6 +7,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UserModel;
 use App\Models\PresensiModel;
 use App\Models\IzinModel;
+use App\Models\ChatModel;
 
 class UserController extends BaseController
 {
@@ -36,6 +37,11 @@ class UserController extends BaseController
         $user = $userModel->find(session()->get('id'));
 
         return view('/user/profile', $user);
+    }
+
+    public function about()
+    {
+        return view('/user/about');
     }
 
     public function updateProfile()
@@ -427,5 +433,193 @@ public function izin()
                            ->with('error', 'Terjadi kesalahan sistem. Silakan coba lagi.');
         }
 }
+
+public function bantuan()
+    {
+        $chatModel = new ChatModel();
+        $userId = session()->get('id');
+        
+        // Buat thread_id unik untuk user ini (user_[id])
+        $threadId = 'user_' . $userId;
+
+        // Ambil chat berdasarkan thread_id
+        $data['chats'] = $chatModel
+            ->where('thread_id', $threadId)
+            ->orderBy('created_at', 'ASC')
+            ->findAll();
+        
+        $data['user_id'] = $userId;
+        $data['thread_id'] = $threadId;
+
+        return view('user/bantuan', $data);
+    }
+
+public function sendMessage()
+    {
+        // Set response type
+        $this->response->setHeader('Content-Type', 'application/json');
+        
+        try {
+            $request = \Config\Services::request();
+            
+            // Basic checks
+            $userId = session()->get('id');
+            $message = $request->getPost('message');
+            
+            // Debug session
+            if (empty($userId)) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Session tidak valid. User ID: ' . var_export($userId, true),
+                    'debug' => [
+                        'session_data' => session()->get(),
+                        'all_session' => $_SESSION ?? 'No $_SESSION'
+                    ]
+                ]);
+            }
+            
+            // Debug message
+            if (empty($message)) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Pesan kosong',
+                    'debug' => [
+                        'post_data' => $request->getPost(),
+                        'raw_input' => file_get_contents('php://input')
+                    ]
+                ]);
+            }
+            
+            // Simple data array
+            $data = [
+                'thread_id' => 'user_' . $userId,
+                'sender_role' => 'user',
+                'sender_id' => (int)$userId,
+                'recipient_id' => null,
+                'message' => trim($message),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            
+            // Try to insert without model validation first
+            $db = \Config\Database::connect();
+            $builder = $db->table('chat');
+            
+            $result = $builder->insert($data);
+            
+            if ($result) {
+                $insertId = $db->insertID();
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => 'Pesan berhasil dikirim',
+                    'data' => array_merge($data, ['id' => $insertId])
+                ]);
+            } else {
+                $error = $db->error();
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Gagal insert ke database',
+                    'debug' => [
+                        'db_error' => $error,
+                        'data_sent' => $data,
+                        'table_exists' => $db->tableExists('chats')
+                    ]
+                ]);
+            }
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Exception: ' . $e->getMessage(),
+                'debug' => [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]
+            ]);
+        }
+    }
+    
+    public function testConnection()
+    {
+        try {
+            $db = \Config\Database::connect();
+            
+            // Test database connection
+            $query = $db->query('SELECT 1 as test');
+            $result = $query->getRow();
+            
+            // Check if chat table exists
+            $tableExists = $db->tableExists('chat');
+            
+            // Get table structure if exists
+            $tableStructure = null;
+            if ($tableExists) {
+                $fields = $db->getFieldData('chat');
+                $tableStructure = array_map(function($field) {
+                    return [
+                        'name' => $field->name,
+                        'type' => $field->type,
+                        'max_length' => $field->max_length,
+                        'nullable' => $field->nullable,
+                        'default' => $field->default
+                    ];
+                }, $fields);
+            }
+            
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Database connection OK',
+                'debug' => [
+                    'connection_test' => $result,
+                    'table_exists' => $tableExists,
+                    'table_structure' => $tableStructure,
+                    'database_name' => $db->getDatabase(),
+                    'session_id' => session()->get('id'),
+                    'session_all' => session()->get()
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Database connection failed: ' . $e->getMessage()
+            ]);
+        }
+    }
+    
+    public function getMessages()
+    {
+        try {
+            $userId = session()->get('id');
+            
+            if (empty($userId)) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Session tidak valid'
+                ]);
+            }
+            
+            $db = \Config\Database::connect();
+            $builder = $db->table('chat');
+            
+            $chats = $builder
+                ->where('thread_id', 'user_' . $userId)
+                ->orderBy('created_at', 'ASC')
+                ->get()
+                ->getResultArray();
+            
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => $chats
+            ]);
+            
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Exception: ' . $e->getMessage()
+            ]);
+        }
+    }
 
 }

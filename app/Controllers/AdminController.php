@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\AdminModel;
 use App\Models\IzinModel;
 use App\Models\PresensiModel;
+use App\Models\ChatModel;
 
 class AdminController extends BaseController
 {
@@ -42,16 +43,13 @@ class AdminController extends BaseController
             $jumlahHadir[] = $presensiModel->where('tanggal', $tgl)->where('status', 'hadir')->countAllResults();
         }
 
-        // Aktivitas terbaru (contoh)
-        $aktivitasTerbaru = [
-            [
-                'tipe' => 'login', 'ikon' => 'fas fa-sign-in-alt',
-                'judul' => 'Ahmad Fauzi Check In',
-                'waktu' => '08:15 WIB',
-                'keterangan' => 'Tepat waktu'
-            ],
-            // Tambahkan dari log aktivitas nyata kalau ada
-        ];
+        // Ambil 3 data presensi terbaru berdasarkan tanggal dan waktu masuk
+        $aktivitasTerbaru = $presensiModel->select('presensi.*, user.nama')
+            ->join('user', 'user.id = presensi.user_id')
+            ->orderBy('tanggal', 'DESC')
+            ->orderBy('waktu_masuk', 'DESC')
+            ->limit(3)
+            ->findAll();
 
         return view('admin/dashboard', [
             'totalPeserta' => $totalPeserta,
@@ -160,5 +158,136 @@ class AdminController extends BaseController
         $this->izinModel->update($id, ['status' => 'ditolak']);
         return redirect()->back()->with('success', 'Izin telah ditolak.');
     }
+
+
+    public function bantuan()
+    {
+        $chatModel = new ChatModel();
+        $userModel = new UserModel();
+
+        // Ambil daftar thread chat yang aktif (group by thread_id)
+        $activeThreads = $chatModel
+            ->select('thread_id, MAX(created_at) as last_message')
+            ->groupBy('thread_id')
+            ->orderBy('last_message', 'DESC')
+            ->findAll();
+
+        // Ambil informasi user untuk setiap thread
+        $users = [];
+        foreach ($activeThreads as $thread) {
+            // Extract user_id from thread_id (format: user_123)
+            if (preg_match('/user_(\d+)/', $thread['thread_id'], $matches)) {
+                $userId = $matches[1];
+                $user = $userModel->find($userId);
+                if ($user) {
+                    $users[] = [
+                        'id' => $userId,
+                        'nama' => $user['nama'],
+                        'thread_id' => $thread['thread_id'],
+                        'last_message' => $thread['last_message']
+                    ];
+                }
+            }
+        }
+
+        $data = [
+            'users' => $users
+        ];
+
+        return view('admin/bantuan', $data);
+    }
+
+    public function sendReply()
+    {
+        $chatModel = new ChatModel();
+        $request = \Config\Services::request();
+        
+        $userId = $request->getPost('user_id');
+        $message = $request->getPost('message');
+        
+        if (empty($message) || empty($userId)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Data tidak lengkap'
+            ]);
+        }
+        
+        $threadId = 'user_' . $userId;
+        
+        $data = [
+            'thread_id' => $threadId,
+            'sender_role' => 'admin',
+            'sender_id' => session()->get('id'),
+            'recipient_id' => $userId,
+            'message' => $message
+        ];
+        
+        $result = $chatModel->insert($data);
+        
+        if ($result) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Balasan berhasil dikirim',
+                'data' => $data
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal mengirim balasan'
+            ]);
+        }
+    }
+
+    public function getChatByUser($userId)
+    {
+        $chatModel = new ChatModel();
+        $threadId = 'user_' . $userId;
+        
+        // Ambil chat berdasarkan thread_id saja
+        $chats = $chatModel
+            ->where('thread_id', $threadId)
+            ->orderBy('created_at', 'ASC')
+            ->findAll();
+        
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data' => $chats
+        ]);
+    }
+
+    public function getAllChats()
+    {
+        $chatModel = new ChatModel();
+        
+        // Method tambahan untuk admin melihat semua chat
+        $chats = $chatModel
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+        
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data' => $chats
+        ]);
+    }
+
+    public function deleteChat($chatId)
+    {
+        $chatModel = new ChatModel();
+        
+        // Method tambahan untuk admin menghapus chat
+        $result = $chatModel->delete($chatId);
+        
+        if ($result) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Chat berhasil dihapus'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Gagal menghapus chat'
+            ]);
+        }
+}
 
 }
