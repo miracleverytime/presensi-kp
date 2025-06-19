@@ -417,6 +417,10 @@
                     <i class="fas fa-users"></i>
                     Kelola Peserta
                 </a>
+                <a href="<?= base_url('admin/izin') ?>" class="menu-item">
+                    <i class="fas fa-file-signature"></i>
+                    Kelola Izin
+                </a>
                 <a href="<?= base_url('admin/presensi') ?>" class="menu-item">
                     <i class="fas fa-chart-bar"></i>
                     Rekap Presensi

@@ -21,7 +21,7 @@
     <!-- Tabel Peserta -->
     <div style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow-x: auto;">
         <h2 style="margin-bottom: 20px;">Tabel Peserta KP</h2>
-                    <?php if (session()->getFlashdata('success')) : ?>
+            <?php if (session()->getFlashdata('success')) : ?>
                 <div style="padding: 12px; background: #d4edda; color: #155724; border-radius: 8px; margin-bottom: 16px;">
                     <?= session()->getFlashdata('success') ?>
                 </div>

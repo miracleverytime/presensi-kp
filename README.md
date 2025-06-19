@@ -4,7 +4,7 @@ Si-Kejar adalah aplikasi berbasis web yang dirancang untuk mencatat dan memantau
 
 ## 🚀 Fitur Utama
 
-- Autentikasi login untuk tiga peran: Admin, Perusahaan, dan Mahasiswa
+- Autentikasi login untuk dua peran: Admin/Pengelola, dan Mahasiswa
 - Dashboard berbeda sesuai peran pengguna
 - Presensi kerja praktik secara online
 - Validasi dan monitoring kehadiran oleh perusahaan

@@ -11,6 +11,16 @@ use App\Models\PresensiModel;
 
 class AdminController extends BaseController
 {
+    
+    protected $izinModel;
+    protected $userModel;
+
+    public function __construct()
+    {
+        $this->izinModel = new IzinModel();
+        $this->userModel = new UserModel();
+    }
+
     public function dashboarda()
     {
         return view('/admin/dashboard');
@@ -72,6 +82,45 @@ class AdminController extends BaseController
 
         $userModel->delete($id);
         return redirect()->to('admin/peserta')->with('success', 'Peserta berhasil dihapus.');
+    }
+
+    public function kelolaIzin()
+    {
+        $daftarIzin = $this->izinModel
+            ->select('izin.*, user.nama, user.nim, user.kampus')
+            ->join('user', 'user.id = izin.user_id')
+            ->orderBy('izin.created_at', 'DESC')
+            ->findAll();
+
+        return view('admin/kelola_izin', [
+            'daftarIzin' => $daftarIzin
+        ]);
+    }
+
+    // Setujui izin
+    public function setujuIzin($id)
+    {
+        $izin = $this->izinModel->find($id);
+
+        if (!$izin || $izin['status'] !== 'pending') {
+            return redirect()->back()->with('error', 'Data izin tidak valid.');
+        }
+
+        $this->izinModel->update($id, ['status' => 'diterima']);
+        return redirect()->back()->with('success', 'Izin telah disetujui.');
+    }
+
+    // Tolak izin
+    public function tolakIzin($id)
+    {
+        $izin = $this->izinModel->find($id);
+
+        if (!$izin || $izin['status'] !== 'pending') {
+            return redirect()->back()->with('error', 'Data izin tidak valid.');
+        }
+
+        $this->izinModel->update($id, ['status' => 'ditolak']);
+        return redirect()->back()->with('success', 'Izin telah ditolak.');
     }
 
 }
