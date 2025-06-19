@@ -565,13 +565,6 @@
     </div>
 
         <script>
-        // Mobile menu toggle
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const sidebar = document.getElementById('sidebar');
-
-        mobileMenuToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('active');
-        });
 
         // Avatar upload handling
         const profileAvatar = document.getElementById('profileAvatar');
@@ -595,47 +588,5 @@
             }
         });
 
-        // Password form handling
-        const passwordForm = document.getElementById('passwordForm');
-        const passwordError = document.getElementById('passwordError');
-        const errorMessage = document.getElementById('errorMessage');
-
-        passwordForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const oldPassword = document.getElementById('oldPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            // Reset error display
-            passwordError.style.display = 'none';
-
-            // Validate passwords
-            if (newPassword !== confirmPassword) {
-                errorMessage.textContent = 'Password baru dan konfirmasi password tidak cocok!';
-                passwordError.style.display = 'block';
-                return;
-            }
-
-            if (newPassword.length < 6) {
-                errorMessage.textContent = 'Password baru minimal 6 karakter!';
-                passwordError.style.display = 'block';
-                return;
-            }
-
-            // Simulate password change
-            setTimeout(() => {
-                alert('Password berhasil diubah!');
-                passwordForm.reset();
-            }, 500);
-        });
-
-        // Close alerts when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.alert') && !e.target.closest('form')) {
-                successAlert.style.display = 'none';
-                passwordError.style.display = 'none';
-            }
-        });
     </script>
 <?= $this->endSection(); ?>

@@ -40,7 +40,7 @@
                     <i class="fas fa-user-edit"></i>
                     Profil Saya
                 </a>
-                <a href="<?= base_url('logout') ?>" class="menu-item">
+                <a href="#" class="menu-item" id="btnLogout">
                     <i class="fas fa-sign-out-alt"></i>
                     Logout
                 </a>
@@ -49,8 +49,26 @@
 
         <?= $this->renderSection('content'); ?>
 
-        
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+            document.getElementById('btnLogout').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Yakin ingin logout?',
+                    text: "Sesi kamu akan diakhiri.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff6b6b',
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: 'Ya, logout!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "<?= base_url('logout') ?>";
+                    }
+                });
+            });
         // Real-time clock
         function updateTime() {
             const now = new Date();
@@ -69,7 +87,6 @@
         // Update time every second
         setInterval(updateTime, 1000);
         updateTime();
-
     </script>
 </body>
 </html>

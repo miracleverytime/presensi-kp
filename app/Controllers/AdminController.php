@@ -23,7 +23,45 @@ class AdminController extends BaseController
 
     public function dashboarda()
     {
-        return view('/admin/dashboard');
+        $userModel = new UserModel();
+        $presensiModel = new PresensiModel();
+
+        $totalPeserta = $userModel->countAll();
+        $hadirHariIni = $presensiModel->where('tanggal', date('Y-m-d'))->where('status', 'hadir')->countAllResults();
+        $totalHadir = $presensiModel->where('status', 'hadir')->countAllResults();
+        $totalPresensi = $presensiModel->countAll();
+        $tingkatKehadiran = $totalPresensi > 0 ? round(($totalHadir / $totalPresensi) * 100) : 0;
+        $perluPerhatian = $presensiModel->where('status', 'alpha')->countAllResults();
+
+        // Data grafik kehadiran 7 hari terakhir
+        $labelTanggal = [];
+        $jumlahHadir = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $tgl = date('Y-m-d', strtotime("-$i days"));
+            $labelTanggal[] = date('d M', strtotime($tgl));
+            $jumlahHadir[] = $presensiModel->where('tanggal', $tgl)->where('status', 'hadir')->countAllResults();
+        }
+
+        // Aktivitas terbaru (contoh)
+        $aktivitasTerbaru = [
+            [
+                'tipe' => 'login', 'ikon' => 'fas fa-sign-in-alt',
+                'judul' => 'Ahmad Fauzi Check In',
+                'waktu' => '08:15 WIB',
+                'keterangan' => 'Tepat waktu'
+            ],
+            // Tambahkan dari log aktivitas nyata kalau ada
+        ];
+
+        return view('admin/dashboard', [
+            'totalPeserta' => $totalPeserta,
+            'hadirHariIni' => $hadirHariIni,
+            'tingkatKehadiran' => $tingkatKehadiran,
+            'perluPerhatian' => $perluPerhatian,
+            'labelTanggal' => $labelTanggal,
+            'jumlahHadir' => $jumlahHadir,
+            'aktivitasTerbaru' => $aktivitasTerbaru
+        ]);
     }
 
     public function rekapPresensi()
